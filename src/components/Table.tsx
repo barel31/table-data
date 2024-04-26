@@ -4,8 +4,8 @@ import { largeMockData } from '@/assets/tableMock';
 import { MemoFilteredColumns } from './FilteredColumns';
 import { MemoPageNavigation } from './PageNavigation';
 import { MemoAddRow } from './AddRow';
-import { TableUi } from './TableUi';
-import { MemoButtons } from './MemoButtons';
+import { MemoTableUi } from './TableUi';
+import { MemoDebugButtons } from './DebugButtons';
 
 const itemsPerPage = 100;
 
@@ -45,7 +45,7 @@ export default function Table() {
         filtered={filteredColumns}
         handleHide={handleHideColumn}
       />
-      <TableUi
+      <MemoTableUi
         visibleColumns={visibleColumns}
         currentItems={currentItems}
         handleHideColumn={handleHideColumn}
@@ -58,7 +58,11 @@ export default function Table() {
         itemsPerPage={itemsPerPage}
       />
       <MemoAddRow columns={columns} setData={setData} />
-      <MemoButtons data={data} setData={setData} filtered={filteredColumns} />
+      <MemoDebugButtons
+        data={data}
+        setData={setData}
+        filtered={filteredColumns}
+      />
     </div>
   );
 }

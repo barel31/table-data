@@ -1,7 +1,7 @@
 import { clearRows } from '@/services/table';
 import { type Dispatch, type SetStateAction, memo } from 'react';
 
-export function MemoButtons({
+export function DebugButtons({
   data,
   setData,
   filtered,
@@ -31,4 +31,4 @@ export function MemoButtons({
   );
 }
 
-export const MemoMemoButtons = memo(MemoButtons);
+export const MemoDebugButtons = memo(DebugButtons);
