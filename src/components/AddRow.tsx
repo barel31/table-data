@@ -1,5 +1,5 @@
 import { type Dispatch, type SetStateAction, memo } from 'react';
-import { inputPatern } from '@/helpers/table';
+import { inputPattern } from '@/helpers/table';
 import { addNewRow } from '@/services/table';
 
 export function AddRow({
@@ -31,7 +31,7 @@ export function AddRow({
               type={column.type}
               placeholder={column.title}
               className="p-1 rounded-md border border-gray-300 w-40"
-              pattern={inputPatern(column.type)}
+              pattern={inputPattern(column.type)}
             />
           </div>
         ))}

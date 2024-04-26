@@ -30,7 +30,7 @@ export const FilteredColumns = function FilteredColumns({
           columnTitles.map((column, i) => (
             <button
               key={i}
-              onClick={() => handleClick(column?.id!)}
+              onClick={() => handleClick(column.id)}
               className="flex flex-col justify-center items-center p-2 bg-gray-200 rounded-md"
               title="Show">
               {column.title}

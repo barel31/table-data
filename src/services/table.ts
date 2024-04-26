@@ -7,25 +7,25 @@ import { changeValueType } from '@/helpers/table';
  * @param isColumn - Optional parameter indicating whether the change is for a column title. Default is false.
  * @returns The updated table data.
  */
-export const changeTitle = (
+export const changeValue = (
   event: React.ChangeEvent<HTMLInputElement>,
   prev: TableData,
   isColumn = false
 ) => {
   const { value, name, id } = event.target;
 
-  if (name) {
-    if (isColumn) {
-      const column = prev.columns.find((col) => col.id === name);
-      column!.title = value;
-      return prev;
-    } else {
-      const column = prev.columns.find((col) => col.id === name);
-      const row = prev.data.find((row) => row.id === id);
-      row![name] = changeValueType(value, column?.type!);
-      return prev;
-    }
-  } else return prev;
+  const column = prev.columns.find((col) => col.id === name);
+  if (!column) return prev;
+
+  if (isColumn) {
+    column.title = value;
+    return prev;
+  } else {
+    const row = prev.data.find((row) => row.id === id);
+    if (!row) return prev;
+    row[name] = changeValueType(value, column.type);
+    return prev;
+  }
 };
 
 /**

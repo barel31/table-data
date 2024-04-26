@@ -1,7 +1,7 @@
 import { type Dispatch, type SetStateAction, useCallback } from 'react';
 import { MemoHideColumnBtn } from './HideColumnBtn';
-import { changeTitle } from '@/services/table';
-import { inputPatern } from '@/helpers/table';
+import { changeValue } from '@/services/table';
+import { inputPattern } from '@/helpers/table';
 
 export default function TableUi({
   visibleColumns,
@@ -16,7 +16,7 @@ export default function TableUi({
 }) {
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>, isColumn = false) =>
-      setData((prev) => changeTitle(e, prev, isColumn)),
+      setData((prev) => changeValue(e, prev, isColumn)),
     [setData]
   );
 
@@ -34,7 +34,7 @@ export default function TableUi({
                   name={column.id}
                   type="text"
                   defaultValue={column.title}
-                  className={`border-none text-slate-700 p-2 bg-transparent text-center`}
+                  className="border-none text-slate-700 p-2 bg-transparent text-center"
                   style={{ width: column.width }}
                   onChange={(e) => handleInputChange(e, true)}
                 />
@@ -59,7 +59,7 @@ export default function TableUi({
                     className="border-none text-slate-700 p-2 bg-transparent text-center invalid:bg-red-100 truncate"
                     onChange={handleInputChange}
                     style={{ width: column.width }}
-                    pattern={inputPatern(column.type)}
+                    pattern={inputPattern(column.type)}
                   />
                 </td>
               ))}

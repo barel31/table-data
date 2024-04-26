@@ -9,7 +9,7 @@ export const changeValueType = (value: any, type: string) => {
     case 'number':
       return Number(value);
     case 'boolean':
-      return value === 'true' || value === '1' ? true : false || false;
+      return value === 'true' || value === '1' ? true : false;
     default:
       return value;
   }
@@ -20,7 +20,7 @@ export const changeValueType = (value: any, type: string) => {
  * @param type - The type to get the input pattern for.
  * @returns The input pattern.
  */
-export const inputPatern = (type: string) => {
+export const inputPattern = (type: string) => {
   switch (type) {
     case 'number':
       return '[0-9]*';
