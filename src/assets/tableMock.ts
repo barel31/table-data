@@ -27,7 +27,7 @@ function generateLargeDataSet(rows: number): TableData {
   };
 }
 
-export const largeMockData = generateLargeDataSet(101);
+export const largeMockData = generateLargeDataSet(1000);
 
 export const mockData: TableData = {
   columns: [

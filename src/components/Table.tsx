@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toggleFilteredColumn } from '@/services/table';
 import { largeMockData } from '@/assets/tableMock';
 import { MemoPrintBtn } from './PrintBtn';
@@ -15,12 +15,15 @@ export default function Table() {
   const [visibleColumns, setVisibleColumns] = useState<TableColumn[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Calculate the index of the first and last items on the current page
+  const { columns, data: rows } = data;
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  // Select only the items for the current page
-  const currentItems = data.data.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = useMemo(
+    () => rows.slice(indexOfFirstItem, indexOfLastItem),
+    [rows, indexOfFirstItem, indexOfLastItem]
+  );
 
   const handleHideColumn = useCallback(
     (columnId: string) =>
@@ -29,16 +32,16 @@ export default function Table() {
   );
 
   useEffect(() => {
-    const visibleColumns = data.columns.filter(
+    const visibleColumns = columns.filter(
       (column) => !filteredColumns.includes(column.id)
     );
     setVisibleColumns(visibleColumns);
-  }, [data.columns, filteredColumns]);
+  }, [columns, filteredColumns]);
 
   return (
     <div className="table-data text-center">
       <MemoFilteredColumns
-        data={data}
+        columns={columns}
         filtered={filteredColumns}
         handleHide={handleHideColumn}
       />
@@ -51,10 +54,10 @@ export default function Table() {
       <MemoPageNavigation
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
-        data={data}
+        rows={rows}
         itemsPerPage={itemsPerPage}
       />
-      <MemoAddRow columns={data.columns} setData={setData} />
+      <MemoAddRow columns={columns} setData={setData} />
       <MemoPrintBtn data={data} filtered={filteredColumns} />
     </div>
   );

@@ -1,3 +1,9 @@
+/**
+ * Converts the value to the specified type.
+ * @param value - The value to be converted.
+ * @param type - The type to convert the value to.
+ * @returns The converted value.
+ */
 export const changeValueType = (value: any, type: string) => {
   switch (type) {
     case 'number':
@@ -9,6 +15,11 @@ export const changeValueType = (value: any, type: string) => {
   }
 };
 
+/**
+ * Returns the input pattern for the specified type.
+ * @param type - The type to get the input pattern for.
+ * @returns The input pattern.
+ */
 export const inputPatern = (type: string) => {
   switch (type) {
     case 'number':

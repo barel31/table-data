@@ -2,20 +2,20 @@ import { IconEyeOpen } from '@/assets/icons';
 import { memo, useMemo } from 'react';
 
 export const FilteredColumns = function FilteredColumns({
-  data,
+  columns,
   filtered,
   handleHide,
 }: {
-  data: TableData;
+  columns: TableColumn[];
   filtered: String[];
   handleHide: Function;
 }) {
   const columnTitles = useMemo(
     () =>
-      data.columns
+      columns
         .filter((column) => filtered.includes(column.id))
         .map((column) => ({ id: column.id, title: column.title })),
-    [data.columns, filtered]
+    [columns, filtered]
   );
 
   const handleClick = (columnId: string) => handleHide(columnId);
@@ -25,8 +25,7 @@ export const FilteredColumns = function FilteredColumns({
       <h1>Hidden Columns:</h1>
       <div className="flex flex-row justify-start m-auto gap-4 overflow-x-auto">
         {!columnTitles.length ? (
-          <p className="text-gray-500"
-          >No columns hidden.</p>
+          <p className="text-gray-500 mb-8">No columns hidden.</p>
         ) : (
           columnTitles.map((column, i) => (
             <button

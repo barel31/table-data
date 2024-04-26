@@ -16,25 +16,14 @@ export const changeTitle = (
 
   if (name) {
     if (isColumn) {
-      return {
-        ...prev,
-        columns: prev.columns.map((column) =>
-          column.id === name ? { ...column, title: value } : column
-        ),
-      };
+      const column = prev.columns.find((col) => col.id === name);
+      column!.title = value;
+      return prev;
     } else {
       const column = prev.columns.find((col) => col.id === name);
-      return {
-        ...prev,
-        data: prev.data.map((row) =>
-          row.id === id
-            ? {
-                ...row,
-                [name]: changeValueType(value, column?.type!),
-              }
-            : row
-        ),
-      };
+      const row = prev.data.find((row) => row.id === id);
+      row![name] = changeValueType(value, column?.type!);
+      return prev;
     }
   } else return prev;
 };
@@ -47,10 +36,7 @@ export const changeTitle = (
  */
 export const toggleFilteredColumn = (prev: string[], columnId: string) => {
   if (prev.includes(columnId)) {
-    const copy = [...prev];
-    const index = copy.findIndex((item: any) => item === columnId);
-    copy.splice(index, 1);
-    return copy;
+    return prev.filter((column) => column !== columnId);
   } else return [...prev, columnId];
 };
 
@@ -65,14 +51,8 @@ export const addNewRow = (
   e: React.FormEvent<HTMLFormElement>
 ) => {
   const form = e.target as HTMLFormElement;
-  return {
-    ...prev,
-    data: [
-      ...prev.data,
-      {
-        id: String(prev.data.length + 1),
-        ...Object.fromEntries(new FormData(form)),
-      },
-    ],
-  };
+  const newRow = Object.fromEntries(new FormData(form).entries()) as TableRow;
+  newRow.id = `raw${prev.data.length + 1}`;
+  const newData = [...prev.data, newRow];
+  return { ...prev, data: newData };
 };
