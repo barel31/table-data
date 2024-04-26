@@ -4,6 +4,7 @@ import { largeMockData } from '@/assets/tableMock';
 import { MemoPrintBtn } from './PrintBtn';
 import { MemoFilteredColumns } from './FilteredColumns';
 import { MemoPageNavigation } from './PageNavigation';
+import { MemoAddRow } from './AddRow';
 import TableUi from './TableUi';
 
 const itemsPerPage = 100;
@@ -53,7 +54,7 @@ export default function Table() {
         data={data}
         itemsPerPage={itemsPerPage}
       />
-
+      <MemoAddRow columns={data.columns} setData={setData} />
       <MemoPrintBtn data={data} filtered={filteredColumns} />
     </div>
   );

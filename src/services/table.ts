@@ -53,3 +53,26 @@ export const toggleFilteredColumn = (prev: string[], columnId: string) => {
     return copy;
   } else return [...prev, columnId];
 };
+
+/**
+ * Adds a new row to the table data.
+ * @param prev - The previous table data.
+ * @param newRow - The new row to add
+ * @returns The updated table data.
+ */
+export const addNewRow = (
+  prev: TableData,
+  e: React.FormEvent<HTMLFormElement>
+) => {
+  const form = e.target as HTMLFormElement;
+  return {
+    ...prev,
+    data: [
+      ...prev.data,
+      {
+        id: String(prev.data.length + 1),
+        ...Object.fromEntries(new FormData(form)),
+      },
+    ],
+  };
+};

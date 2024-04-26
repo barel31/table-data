@@ -1,6 +1,7 @@
-import { Dispatch, SetStateAction, useCallback } from 'react';
+import { type Dispatch, type SetStateAction, useCallback } from 'react';
 import { MemoHideColumnBtn } from './HideColumnBtn';
 import { changeTitle } from '@/services/table';
+import { inputPatern } from '@/helpers/table';
 
 export default function TableUi({
   visibleColumns,
@@ -58,13 +59,7 @@ export default function TableUi({
                     className="border-none text-slate-700 p-2 bg-transparent text-center invalid:bg-red-100 truncate"
                     onChange={handleInputChange}
                     style={{ width: column.width }}
-                    pattern={
-                      column.type === 'number'
-                        ? '[0-9]*'
-                        : column.type === 'boolean'
-                        ? 'true|false|1|0'
-                        : '.*'
-                    }
+                    pattern={inputPatern(column.type)}
                   />
                 </td>
               ))}
