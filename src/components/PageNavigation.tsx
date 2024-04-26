@@ -13,7 +13,7 @@ export function PageNavigation({
 }) {
   return (
     <div>
-      <div className="flex justify-between m-2">
+      <div className="flex justify-between w-2/3 mx-auto my-4">
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
           onClick={() => setCurrentPage(currentPage - 1)}
@@ -23,7 +23,7 @@ export function PageNavigation({
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
           onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={currentPage === Math.ceil(rows.length / itemsPerPage)}>
+          disabled={currentPage === Math.ceil(rows?.length / itemsPerPage)}>
           Next
         </button>
       </div>
@@ -35,7 +35,7 @@ export function PageNavigation({
           className="w-10 text-center border border-gray-300 rounded-md"
           onChange={(e) => setCurrentPage(Number(e.target.value))}
         />{' '}
-        of {Math.ceil(rows.length / itemsPerPage)}
+        of {Math.ceil(rows?.length / itemsPerPage)}
       </p>
     </div>
   );

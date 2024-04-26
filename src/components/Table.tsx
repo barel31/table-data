@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toggleFilteredColumn } from '@/services/table';
 import { largeMockData } from '@/assets/tableMock';
-import { MemoPrintBtn } from './PrintBtn';
 import { MemoFilteredColumns } from './FilteredColumns';
 import { MemoPageNavigation } from './PageNavigation';
 import { MemoAddRow } from './AddRow';
-import TableUi from './TableUi';
+import { TableUi } from './TableUi';
+import { MemoButtons } from './MemoButtons';
 
 const itemsPerPage = 100;
 
@@ -21,7 +21,7 @@ export default function Table() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
   const currentItems = useMemo(
-    () => rows.slice(indexOfFirstItem, indexOfLastItem),
+    () => rows?.slice(indexOfFirstItem, indexOfLastItem),
     [rows, indexOfFirstItem, indexOfLastItem]
   );
 
@@ -32,10 +32,10 @@ export default function Table() {
   );
 
   useEffect(() => {
-    const visibleColumns = columns.filter(
+    const visibleColumns = columns?.filter(
       (column) => !filteredColumns.includes(column.id)
     );
-    setVisibleColumns(visibleColumns);
+    setVisibleColumns(visibleColumns.sort((a, b) => a.ordinalNo - b.ordinalNo));
   }, [columns, filteredColumns]);
 
   return (
@@ -58,7 +58,7 @@ export default function Table() {
         itemsPerPage={itemsPerPage}
       />
       <MemoAddRow columns={columns} setData={setData} />
-      <MemoPrintBtn data={data} filtered={filteredColumns} />
+      <MemoButtons data={data} setData={setData} filtered={filteredColumns} />
     </div>
   );
 }

@@ -1,9 +1,9 @@
-import { type Dispatch, type SetStateAction, useCallback } from 'react';
+import { type Dispatch, type SetStateAction, useCallback, memo } from 'react';
 import { MemoHideColumnBtn } from './HideColumnBtn';
 import { changeValue } from '@/services/table';
 import { inputPattern } from '@/helpers/table';
 
-export default function TableUi({
+export function TableUi({
   visibleColumns,
   currentItems,
   handleHideColumn,
@@ -21,7 +21,7 @@ export default function TableUi({
   );
 
   return (
-    <div className="overflow-auto h-[65vh]">
+    <div className="overflow-auto h-[65vh] w-fit max-w-full m-auto">
       <table>
         <thead>
           <tr>
@@ -29,15 +29,18 @@ export default function TableUi({
               <th
                 key={column.id}
                 style={{ width: column.width }}
-                className="sticky top-0 bg-white z-10 shadow-md">
+                className="sticky top-0 bg-white z-10 shadow-sm">
                 <input
-                  name={column.id}
+                  id={`0-${column.id}`}
                   type="text"
                   defaultValue={column.title}
-                  className="border-none text-slate-700 p-2 bg-transparent text-center"
+                  className="border-none text-slate-700 p-1 bg-transparent text-center"
                   style={{ width: column.width }}
                   onChange={(e) => handleInputChange(e, true)}
                 />
+                <p className="text-xs text-slate-500 italic truncate relative bottom-1">
+                  {column.type}
+                </p>
                 <MemoHideColumnBtn
                   column={column}
                   handleHideColumn={handleHideColumn}
@@ -47,13 +50,12 @@ export default function TableUi({
           </tr>
         </thead>
         <tbody>
-          {currentItems.map((row) => (
-            <tr key={row.id} className="border-b">
+          {currentItems?.map((row) => (
+            <tr key={row.id + Date.now()} className="border-b even:bg-gray-50">
               {visibleColumns.map((column) => (
-                <td key={column.id} className="px-4 py-2">
+                <td key={column.id}>
                   <input
-                    name={column.id}
-                    id={row.id}
+                    id={`${row.id}-${column.id}`}
                     type={column.type}
                     defaultValue={String(row[column.id])}
                     className="border-none text-slate-700 p-2 bg-transparent text-center invalid:bg-red-100 truncate"
@@ -70,3 +72,5 @@ export default function TableUi({
     </div>
   );
 }
+
+export const MemoTableUi = memo(TableUi);

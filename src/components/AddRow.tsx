@@ -21,12 +21,13 @@ export function AddRow({
         action="#"
         onSubmit={handleSubmit}
         className="flex flex-col gap-2 bg-gray-200 p-4 rounded-lg">
-        {columns.map((column) => (
+        {columns?.map((column) => (
           <div className="flex gap-2 justify-start" key={column.id}>
             <label htmlFor={column.id} className="w-20 text-left">
               {column.title}:
             </label>
             <input
+              id={column.id}
               name={column.id}
               type={column.type}
               placeholder={column.title}

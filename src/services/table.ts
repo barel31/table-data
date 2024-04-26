@@ -12,18 +12,21 @@ export const changeValue = (
   prev: TableData,
   isColumn = false
 ) => {
-  const { value, name, id } = event.target;
+  const { value, id } = event.target;
 
-  const column = prev.columns.find((col) => col.id === name);
+  const [rowId, columnId] = id.split('-');
+  console.log(id);
+
+  const column = prev.columns.find((col) => col.id === columnId);
   if (!column) return prev;
 
   if (isColumn) {
     column.title = value;
     return prev;
   } else {
-    const row = prev.data.find((row) => row.id === id);
+    const row = prev.data.find((row) => row.id === rowId);
     if (!row) return prev;
-    row[name] = changeValueType(value, column.type);
+    row[columnId] = changeValueType(value, column.type);
     return prev;
   }
 };
@@ -56,3 +59,21 @@ export const addNewRow = (
   const newData = [...prev.data, newRow];
   return { ...prev, data: newData };
 };
+
+/**
+ * Deletes a row from the table data.
+ * @param prev - The previous table data.
+ * @param rowId - The ID of the row to delete.
+ * @returns The updated table data.
+ */
+export const deleteRow = (prev: TableData, rowId: string) => {
+  const newData = prev.data.filter((row) => row.id !== rowId);
+  return { ...prev, data: newData };
+};
+
+/**
+ * Clears all rows from the table data.
+ * @param prev - The previous table data.
+ * @returns The updated table data.
+ */
+export const clearRows = (prev: TableData) => ({ ...prev, data: [] });

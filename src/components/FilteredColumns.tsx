@@ -13,7 +13,7 @@ export const FilteredColumns = function FilteredColumns({
   const columnTitles = useMemo(
     () =>
       columns
-        .filter((column) => filtered.includes(column.id))
+        ?.filter((column) => filtered.includes(column.id))
         .map((column) => ({ id: column.id, title: column.title })),
     [columns, filtered]
   );
@@ -24,10 +24,10 @@ export const FilteredColumns = function FilteredColumns({
     <div className="filtered-columns m-12 text-left">
       <h1>Hidden Columns:</h1>
       <div className="flex flex-row justify-start m-auto gap-4 overflow-x-auto">
-        {!columnTitles.length ? (
+        {!columnTitles?.length ? (
           <p className="text-gray-500 mb-8">No columns hidden.</p>
         ) : (
-          columnTitles.map((column, i) => (
+          columnTitles?.map((column, i) => (
             <button
               key={i}
               onClick={() => handleClick(column.id)}
