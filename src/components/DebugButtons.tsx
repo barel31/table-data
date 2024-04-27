@@ -1,22 +1,27 @@
 import { clearRows } from '@/services/table';
 import { type Dispatch, type SetStateAction, memo } from 'react';
 
+type Props = {
+  data: TableData;
+  setDraft: Dispatch<SetStateAction<TableData>>;
+  hiddenColumns: string[];
+  visibleColumns: TableColumn[];
+};
+
 export function DebugButtons({
   data,
-  setData,
-  filtered,
-}: {
-  data: TableData;
-  setData: Dispatch<SetStateAction<TableData>>;
-  filtered: any;
-}) {
+  setDraft,
+  hiddenColumns,
+  visibleColumns,
+}: Props) {
   const handleClickClear = () => {
-    setData((prev) => clearRows(prev));
+    setDraft(prev => clearRows(prev));
   };
 
   const handleClickPrint = () => {
-    console.log(data);
-    console.log(filtered);
+    console.log('Table data', data);
+    console.log('Hidden columns', hiddenColumns);
+    console.log('Visible columns', visibleColumns);
   };
 
   return (
@@ -25,7 +30,7 @@ export function DebugButtons({
         CLEAR ROWS
       </button>
       <button className="border p-5" onClick={handleClickPrint}>
-        PRINT DATA
+        CONSOLE DATA
       </button>
     </div>
   );

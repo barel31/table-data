@@ -2,16 +2,15 @@ import { type Dispatch, type SetStateAction, memo } from 'react';
 import { inputPattern } from '@/helpers/table';
 import { addNewRow } from '@/services/table';
 
-export function AddRow({
-  columns,
-  setData,
-}: {
+type Props = {
   columns: TableColumn[];
-  setData: Dispatch<SetStateAction<TableData>>;
-}) {
+  setDraft: Dispatch<SetStateAction<TableData>>;
+};
+
+export function AddRow({ columns, setDraft }: Props) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setData((prev) => addNewRow(prev, e));
+    setDraft(prev => addNewRow(prev, e));
   };
 
   return (
@@ -21,7 +20,7 @@ export function AddRow({
         action="#"
         onSubmit={handleSubmit}
         className="flex flex-col gap-2 bg-gray-200 p-4 rounded-lg">
-        {columns?.map((column) => (
+        {columns?.map(column => (
           <div className="flex gap-2 justify-start" key={column.id}>
             <label htmlFor={column.id} className="w-20 text-left">
               {column.title}:

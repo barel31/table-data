@@ -1,45 +1,54 @@
-import { changeValueType } from '@/helpers/table';
+import { changeCellValueType } from '@/helpers/table';
 
 /**
- * Changes the title of a column or updates the value of a cell in the table data.
- * @param event - The change event triggered by the input element.
+ * Updates the value of a cell in the table data.
  * @param prev - The previous table data.
- * @param isColumn - Optional parameter indicating whether the change is for a column title. Default is false.
+ * @param column - The column of the cell to update.
+ * @param row - The row of the cell to update.
+ * @param value - The new value of the cell.
  * @returns The updated table data.
  */
-export const changeValue = (
-  event: React.ChangeEvent<HTMLInputElement>,
+export const updateCellValue = (
   prev: TableData,
-  isColumn = false
+  column: TableColumn,
+  row: TableRow,
+  value: CellValue
 ) => {
-  const { value, id } = event.target;
-
-  const [rowId, columnId] = id.split('-');
-  console.log(id);
-
-  const column = prev.columns.find((col) => col.id === columnId);
-  if (!column) return prev;
-
-  if (isColumn) {
-    column.title = value;
-    return prev;
-  } else {
-    const row = prev.data.find((row) => row.id === rowId);
-    if (!row) return prev;
-    row[columnId] = changeValueType(value, column.type);
-    return prev;
+  if (!row) {
+    if (value === column.title) return prev;
+    return {
+      ...prev,
+      columns: prev.columns.map(col => {
+        if (col.id === column.id) {
+          col.title = String(value);
+          return col;
+        }
+        return col;
+      }),
+    };
   }
+
+  if (value === row[column.id]) return prev;
+  return {
+    ...prev,
+    data: prev.data.map(r => {
+      if (r.id === row.id) {
+        r[column.id] = changeCellValueType(value, column.type) ?? r[column.id];
+      }
+      return r;
+    }),
+  };
 };
 
 /**
- * Toggles the filtered state of a column in the table.
- * @param prev - The previous array of filtered column IDs.
+ * Toggles the visibility of a column in the table.
+ * @param prev - The previous list of visible columns.
  * @param columnId - The ID of the column to toggle.
- * @returns The updated array of filtered column IDs.
+ * @returns The updated list of visible columns.
  */
 export const toggleFilteredColumn = (prev: string[], columnId: string) => {
   if (prev.includes(columnId)) {
-    return prev.filter((column) => column !== columnId);
+    return prev.filter(column => column !== columnId);
   } else return [...prev, columnId];
 };
 
@@ -55,8 +64,8 @@ export const addNewRow = (
 ) => {
   const form = e.target as HTMLFormElement;
   const newRow = Object.fromEntries(new FormData(form).entries()) as TableRow;
-  newRow.id = `raw${prev.data.length + 1}`;
-  const newData = [...prev.data, newRow];
+  newRow.id = `row${prev.data.length + 1}`;
+  const newData = [newRow, ...prev.data];
   return { ...prev, data: newData };
 };
 
@@ -67,7 +76,7 @@ export const addNewRow = (
  * @returns The updated table data.
  */
 export const deleteRow = (prev: TableData, rowId: string) => {
-  const newData = prev.data.filter((row) => row.id !== rowId);
+  const newData = prev.data.filter(row => row.id !== rowId);
   return { ...prev, data: newData };
 };
 

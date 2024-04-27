@@ -1,16 +1,18 @@
-import { memo } from 'react';
+import { type Dispatch, type SetStateAction, memo } from 'react';
+
+type Props = {
+  setCurrentPage: Dispatch<SetStateAction<number>>;
+  currentPage: number;
+  rows: TableRow[];
+  itemsPerPage: number;
+};
 
 export function PageNavigation({
   setCurrentPage,
   currentPage,
   rows,
   itemsPerPage,
-}: {
-  setCurrentPage: Function;
-  currentPage: number;
-  rows: TableRow[];
-  itemsPerPage: number;
-}) {
+}: Props) {
   return (
     <div>
       <div className="flex justify-between w-2/3 mx-auto my-4">
@@ -28,13 +30,13 @@ export function PageNavigation({
         </button>
       </div>
       <p className="text-center mt-4 text-gray-500">
-        Page{' '}
+        Page
         <input
           type="number"
           defaultValue={currentPage}
-          className="w-10 text-center border border-gray-300 rounded-md"
-          onChange={(e) => setCurrentPage(Number(e.target.value))}
-        />{' '}
+          className="w-10 text-center border border-gray-300 rounded-md mx-3"
+          onChange={e => setCurrentPage(Number(e.target.value))}
+        />
         of {Math.ceil(rows?.length / itemsPerPage)}
       </p>
     </div>

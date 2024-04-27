@@ -1,21 +1,24 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { toggleFilteredColumn } from '@/services/table';
 import { largeMockData } from '@/assets/tableMock';
-import { MemoFilteredColumns } from './FilteredColumns';
+import { MemoHiddenColumns } from './HiddenColumns';
 import { MemoPageNavigation } from './PageNavigation';
 import { MemoAddRow } from './AddRow';
 import { MemoTableUi } from './TableUi';
 import { MemoDebugButtons } from './DebugButtons';
+import { SaveButton } from './SaveButton';
 
 const itemsPerPage = 100;
 
 export default function Table() {
   const [data, setData] = useState<TableData>(largeMockData);
-  const [filteredColumns, setFilteredColumns] = useState<string[]>([]);
-  const [visibleColumns, setVisibleColumns] = useState<TableColumn[]>([]);
+  const [draft, setDraft] = useState<TableData>(
+    JSON.parse(JSON.stringify(data))
+  );
+  const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { columns, data: rows } = data;
+  const { columns, data: rows } = draft;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -27,29 +30,31 @@ export default function Table() {
 
   const handleHideColumn = useCallback(
     (columnId: string) =>
-      setFilteredColumns((prev) => toggleFilteredColumn(prev, columnId)),
+      setHiddenColumns(prev => toggleFilteredColumn(prev, columnId)),
     []
   );
 
-  useEffect(() => {
-    const visibleColumns = columns?.filter(
-      (column) => !filteredColumns.includes(column.id)
-    );
-    setVisibleColumns(visibleColumns.sort((a, b) => a.ordinalNo - b.ordinalNo));
-  }, [columns, filteredColumns]);
+  const visibleColumns = useMemo(
+    () =>
+      columns
+        ?.filter(column => !hiddenColumns.includes(column.id))
+        .sort((a, b) => a.ordinalNo - b.ordinalNo),
+    [columns, hiddenColumns]
+  );
 
   return (
     <div className="table-data text-center">
-      <MemoFilteredColumns
+      <MemoAddRow columns={columns} setDraft={setDraft} />
+      <MemoHiddenColumns
         columns={columns}
-        filtered={filteredColumns}
-        handleHide={handleHideColumn}
+        hiddenColumns={hiddenColumns}
+        handleHideColumn={handleHideColumn}
       />
       <MemoTableUi
         visibleColumns={visibleColumns}
         currentItems={currentItems}
         handleHideColumn={handleHideColumn}
-        setData={setData}
+        setDraft={setDraft}
       />
       <MemoPageNavigation
         currentPage={currentPage}
@@ -57,11 +62,12 @@ export default function Table() {
         rows={rows}
         itemsPerPage={itemsPerPage}
       />
-      <MemoAddRow columns={columns} setData={setData} />
+      <SaveButton draft={draft} setData={setData} />
       <MemoDebugButtons
         data={data}
-        setData={setData}
-        filtered={filteredColumns}
+        setDraft={setDraft}
+        hiddenColumns={hiddenColumns}
+        visibleColumns={visibleColumns}
       />
     </div>
   );

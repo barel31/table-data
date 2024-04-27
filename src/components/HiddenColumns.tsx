@@ -1,36 +1,36 @@
 import { IconEyeOpen } from '@/assets/icons';
 import { memo, useMemo } from 'react';
 
-export const FilteredColumns = function FilteredColumns({
-  columns,
-  filtered,
-  handleHide,
-}: {
+type Props = {
   columns: TableColumn[];
-  filtered: String[];
-  handleHide: Function;
-}) {
+  hiddenColumns: String[];
+  handleHideColumn: (columnId: string) => void;
+};
+
+export const HiddenColumns = function HiddenColumns({
+  columns,
+  hiddenColumns,
+  handleHideColumn,
+}: Props) {
   const columnTitles = useMemo(
     () =>
       columns
-        ?.filter((column) => filtered.includes(column.id))
-        .map((column) => ({ id: column.id, title: column.title })),
-    [columns, filtered]
+        ?.filter(column => hiddenColumns.includes(column.id))
+        .map(column => ({ id: column.id, title: column.title })),
+    [columns, hiddenColumns]
   );
 
-  const handleClick = (columnId: string) => handleHide(columnId);
-
   return (
-    <div className="filtered-columns m-12 text-left">
+    <div className="hidden-columns m-12 text-left">
       <h1>Hidden Columns:</h1>
       <div className="flex flex-row justify-start m-auto gap-4 overflow-x-auto">
         {!columnTitles?.length ? (
           <p className="text-gray-500 mb-8">No columns hidden.</p>
         ) : (
-          columnTitles?.map((column, i) => (
+          columnTitles?.map(column => (
             <button
-              key={i}
-              onClick={() => handleClick(column.id)}
+              key={column.id}
+              onClick={() => handleHideColumn(column.id)}
               className="flex flex-col justify-center items-center p-2 bg-gray-200 rounded-md"
               title="Show">
               {column.title}
@@ -43,4 +43,4 @@ export const FilteredColumns = function FilteredColumns({
   );
 };
 
-export const MemoFilteredColumns = memo(FilteredColumns);
+export const MemoHiddenColumns = memo(HiddenColumns);
