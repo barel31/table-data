@@ -1,11 +1,11 @@
-import { changeCellValueType } from '@/helpers/table';
+import { convertValueType } from '@/helpers/table';
 
 /**
  * Updates the value of a cell in the table data.
  * @param prev - The previous table data.
- * @param column - The column of the cell to update.
- * @param row - The row of the cell to update.
- * @param value - The new value of the cell.
+ * @param column - The column of the cell being updated.
+ * @param row - The row of the cell being updated.
+ * @param value - The new value for the cell.
  * @returns The updated table data.
  */
 export const updateCellValue = (
@@ -13,30 +13,31 @@ export const updateCellValue = (
   column: TableColumn,
   row: TableRow,
   value: CellValue
-) => {
+): TableData => {
   if (!row) {
     if (value === column.title) return prev;
+    const col = prev.columns.find(col => col.id === column.id);
+    if (col) {
+      col.title = String(value);
+      return { ...prev };
+    }
     return {
       ...prev,
-      columns: prev.columns.map(col => {
-        if (col.id === column.id) {
-          col.title = String(value);
-          return col;
-        }
-        return col;
-      }),
+      columns: [...prev.columns, { ...column, title: value!.toString() }],
     };
   }
 
   if (value === row[column.id]) return prev;
+  const changedValueType = convertValueType(value, column.type);
+  if (!changedValueType) return prev;
+  const findRow = prev.data.find(r => r.id === row.id);
+  if (findRow) {
+    findRow[column.id] = changedValueType;
+    return { ...prev };
+  }
   return {
     ...prev,
-    data: prev.data.map(r => {
-      if (r.id === row.id) {
-        r[column.id] = changeCellValueType(value, column.type) ?? r[column.id];
-      }
-      return r;
-    }),
+    data: [...prev.data, { [column.id]: changedValueType, ...row }],
   };
 };
 
@@ -86,3 +87,26 @@ export const deleteRow = (prev: TableData, rowId: string) => {
  * @returns The updated table data.
  */
 export const clearRows = (prev: TableData) => ({ ...prev, data: [] });
+
+/**
+ * Updates the changes in the table data.
+ * @param prev - The previous table data.
+ * @param changes - The changes to be applied to the table data.
+ * @returns The updated table data.
+ */
+export const updateChanges = (
+  prev: TableData,
+  changes: TableData
+): TableData => {
+  return {
+    ...prev,
+    columns: prev.columns.map(column => {
+      const changeColumn = changes.columns.find(c => c.id === column.id);
+      return changeColumn ? changeColumn : column;
+    }),
+    data: prev.data.map(row => {
+      const changeRow = changes.data.find(d => d.id === row.id);
+      return changeRow ? changeRow : row;
+    }),
+  };
+};

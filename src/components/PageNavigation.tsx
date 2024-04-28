@@ -1,31 +1,47 @@
 import { type Dispatch, type SetStateAction, memo } from 'react';
+import { itemsPerPage } from '@/assets/constants';
 
 type Props = {
-  setCurrentPage: Dispatch<SetStateAction<number>>;
   currentPage: number;
   rows: TableRow[];
-  itemsPerPage: number;
+  setCurrentPage: Dispatch<SetStateAction<number>>;
 };
 
-export function PageNavigation({
-  setCurrentPage,
+export default function PageNavigation({
   currentPage,
   rows,
-  itemsPerPage,
+  setCurrentPage,
 }: Props) {
+  const lastPage = Math.ceil(rows?.length / itemsPerPage);
+
+  const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const pageNumber = Number(e.currentTarget.value);
+      changePage(pageNumber);
+    }
+  };
+
+  const changePage = (value: number) => {
+    if (value >= 1 && value <= lastPage) {
+      setCurrentPage(value);
+    }
+  };
+
   return (
     <div>
-      <div className="flex justify-between w-2/3 mx-auto my-4">
+      <div className="flex justify-between md:w-2/3 px-2 mx-auto my-4">
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-700"
           onClick={() => setCurrentPage(currentPage - 1)}
-          disabled={currentPage === 1}>
+          disabled={currentPage === 1}
+          title="Go to the previous page.">
           Previous
         </button>
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
+          className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300 disabled:cursor-not-allowed hover:bg-blue-700"
           onClick={() => setCurrentPage(currentPage + 1)}
-          disabled={currentPage === Math.ceil(rows?.length / itemsPerPage)}>
+          disabled={currentPage === lastPage}
+          title="Go to the next page.">
           Next
         </button>
       </div>
@@ -35,9 +51,11 @@ export function PageNavigation({
           type="number"
           defaultValue={currentPage}
           className="w-10 text-center border border-gray-300 rounded-md mx-3"
-          onChange={e => setCurrentPage(Number(e.target.value))}
+          onKeyDown={handleOnKeyDown}
+          onBlur={e => changePage(Number(e.currentTarget.value))}
+          title='Enter a page number and press "Enter" to navigate to that page.'
         />
-        of {Math.ceil(rows?.length / itemsPerPage)}
+        of {lastPage}
       </p>
     </div>
   );

@@ -2,9 +2,9 @@
  * Converts the value to the specified type.
  * @param value - The value to be converted.
  * @param type - The type to convert the value to.
- * @returns The converted value.
+ * @returns The converted value. If the conversion fails, it returns `undefined`.
  */
-export const changeCellValueType = (value: any, type: string) => {
+export const convertValueType = (value: CellValue, type: string) => {
   switch (type) {
     case 'number':
       return Number(value);
@@ -12,6 +12,7 @@ export const changeCellValueType = (value: any, type: string) => {
       if (value === 'true' || value === '1') return true;
       else if (value === 'false' || value === '0') return false;
       else return undefined;
+
     default:
       return value;
   }
@@ -31,10 +32,4 @@ export const inputPattern = (type: string) => {
     default:
       return '.*';
   }
-};
-
-export const cloneDeep = (obj: Object) => {
-  // clone the object to prevent mutation
-  // clone deep to prevent mutation
-  return JSON.parse(JSON.stringify(obj));
 };

@@ -4,13 +4,13 @@ import { addNewRow } from '@/services/table';
 
 type Props = {
   columns: TableColumn[];
-  setDraft: Dispatch<SetStateAction<TableData>>;
+  setData: Dispatch<SetStateAction<TableData>>;
 };
 
-export function AddRow({ columns, setDraft }: Props) {
+export default function AddRow({ columns, setData }: Props) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setDraft(prev => addNewRow(prev, e));
+    setData(prev => addNewRow(prev, e));
   };
 
   return (
@@ -22,7 +22,7 @@ export function AddRow({ columns, setDraft }: Props) {
         className="flex flex-col gap-2 bg-gray-200 p-4 rounded-lg">
         {columns?.map(column => (
           <div className="flex gap-2 justify-start" key={column.id}>
-            <label htmlFor={column.id} className="w-20 text-left">
+            <label htmlFor={column.id} className="w-20 text-left truncate">
               {column.title}:
             </label>
             <input
@@ -37,7 +37,8 @@ export function AddRow({ columns, setDraft }: Props) {
         ))}
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded-md w-full">
+          className="bg-blue-500 text-white p-2 rounded-md w-full hover:bg-blue-600 active:bg-blue-700 shadow-sm hover:shadow-md"
+          title="Add a new row to the table.">
           Add
         </button>
       </form>

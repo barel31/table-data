@@ -1,7 +1,7 @@
 import { IconHideEyeClose } from '@/assets/icons';
 import { memo } from 'react';
 
-export const HideColumnBtn = function HideColumnBtn({
+export default function HideColumnBtn({
   column,
   handleHideColumn,
 }: {
@@ -12,10 +12,10 @@ export const HideColumnBtn = function HideColumnBtn({
     <button
       className="block my-1 mx-auto"
       onClick={() => handleHideColumn(column.id)}
-      title="Hide">
+      title={`Hide ${column.title}`}>
       <IconHideEyeClose className="w-4" />
     </button>
   );
-};
+}
 
 export const MemoHideColumnBtn = memo(HideColumnBtn);

@@ -1,24 +1,21 @@
 import { useCallback, useMemo, useState } from 'react';
 import { toggleFilteredColumn } from '@/services/table';
 import { largeMockData } from '@/assets/tableMock';
+import { itemsPerPage } from '@/assets/constants';
 import { MemoHiddenColumns } from './HiddenColumns';
-import { MemoPageNavigation } from './PageNavigation';
-import { MemoAddRow } from './AddRow';
 import { MemoTableUi } from './TableUi';
+import { MemoPageNavigation } from './PageNavigation';
 import { MemoDebugButtons } from './DebugButtons';
-import { SaveButton } from './SaveButton';
-
-const itemsPerPage = 100;
+import { MemoAddRow } from './AddRow';
+import { MemoSaveButton } from './SaveButton';
 
 export default function Table() {
-  const [data, setData] = useState<TableData>(largeMockData);
-  const [draft, setDraft] = useState<TableData>(
-    JSON.parse(JSON.stringify(data))
-  );
+  const [data, setData] = useState(largeMockData);
+  const [changes, setChanges] = useState<TableData>({ columns: [], data: [] });
   const [hiddenColumns, setHiddenColumns] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { columns, data: rows } = draft;
+  const { columns, data: rows } = data;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -44,7 +41,7 @@ export default function Table() {
 
   return (
     <div className="table-data text-center">
-      <MemoAddRow columns={columns} setDraft={setDraft} />
+      <MemoAddRow columns={columns} setData={setData} />
       <MemoHiddenColumns
         columns={columns}
         hiddenColumns={hiddenColumns}
@@ -54,20 +51,25 @@ export default function Table() {
         visibleColumns={visibleColumns}
         currentItems={currentItems}
         handleHideColumn={handleHideColumn}
-        setDraft={setDraft}
+        setChanges={setChanges}
+        setData={setData}
       />
       <MemoPageNavigation
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
         rows={rows}
-        itemsPerPage={itemsPerPage}
       />
-      <SaveButton draft={draft} setData={setData} />
+      <MemoSaveButton
+        setData={setData}
+        changes={changes}
+        setChanges={setChanges}
+      />
       <MemoDebugButtons
         data={data}
-        setDraft={setDraft}
+        setData={setData}
         hiddenColumns={hiddenColumns}
         visibleColumns={visibleColumns}
+        changes={changes}
       />
     </div>
   );
