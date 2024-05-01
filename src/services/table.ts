@@ -42,18 +42,6 @@ export const updateCellValue = (
 };
 
 /**
- * Toggles the visibility of a column in the table.
- * @param prev - The previous list of visible columns.
- * @param columnId - The ID of the column to toggle.
- * @returns The updated list of visible columns.
- */
-export const toggleFilteredColumn = (prev: string[], columnId: string) => {
-  if (prev.includes(columnId)) {
-    return prev.filter(column => column !== columnId);
-  } else return [...prev, columnId];
-};
-
-/**
  * Adds a new row to the table data.
  * @param prev - The previous table data.
  * @param newRow - The new row to add
@@ -62,7 +50,7 @@ export const toggleFilteredColumn = (prev: string[], columnId: string) => {
 export const addNewRow = (
   prev: TableData,
   e: React.FormEvent<HTMLFormElement>
-) => {
+): TableData => {
   const form = e.target as HTMLFormElement;
   const newRow = Object.fromEntries(new FormData(form).entries()) as TableRow;
   newRow.id = `row${prev.data.length + 1}`;
@@ -76,7 +64,7 @@ export const addNewRow = (
  * @param rowId - The ID of the row to delete.
  * @returns The updated table data.
  */
-export const deleteRow = (prev: TableData, rowId: string) => {
+export const deleteRow = (prev: TableData, rowId: string): TableData => {
   const newData = prev.data.filter(row => row.id !== rowId);
   return { ...prev, data: newData };
 };
@@ -102,11 +90,23 @@ export const updateChanges = (
     ...prev,
     columns: prev.columns.map(column => {
       const changeColumn = changes.columns.find(c => c.id === column.id);
-      return changeColumn ? changeColumn : column;
+      return changeColumn ?? column;
     }),
     data: prev.data.map(row => {
       const changeRow = changes.data.find(d => d.id === row.id);
-      return changeRow ? changeRow : row;
+      return changeRow ?? row;
     }),
   };
+};
+
+/**
+ * Toggles the visibility of a column in the table.
+ * @param prev - The previous list of visible columns.
+ * @param columnId - The ID of the column to toggle.
+ * @returns The updated list of visible columns.
+ */
+export const toggleFilteredColumn = (prev: string[], columnId: string) => {
+  if (prev.includes(columnId)) {
+    return prev.filter(column => column !== columnId);
+  } else return [...prev, columnId];
 };

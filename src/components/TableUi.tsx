@@ -1,30 +1,13 @@
-import {
-  type Dispatch,
-  type SetStateAction,
-  useCallback,
-  memo,
-  useRef,
-} from 'react';
-import { deleteRow, updateCellValue } from '@/services/table';
+import { useCallback, memo, useRef } from 'react';
+import useTableContext from '@/hooks/useTableContext';
 import useDebounced from '@/hooks/useDebounced';
+import { updateCellValue } from '@/services/table';
 import { MemoTableHead } from './TableHead';
 import { MemoTableBody } from './TableBody';
 
-type Props = {
-  visibleColumns: TableColumn[];
-  currentItems: TableRow[];
-  handleHideColumn: (columnId: string) => void;
-  setChanges: Dispatch<SetStateAction<TableData>>;
-  setData: Dispatch<SetStateAction<TableData>>;
-};
+export default function TableUi() {
+  const { visibleColumns, currentItems, setChanges } = useTableContext();
 
-export default function TableUi({
-  visibleColumns,
-  currentItems,
-  handleHideColumn,
-  setChanges,
-  setData,
-}: Props) {
   const pendingChanges = useRef<PendingChange[]>([]);
 
   const debouncedSetChanges = useDebounced(() => {
@@ -37,35 +20,30 @@ export default function TableUi({
 
   const handleUpdateCell = useCallback(
     (column: TableColumn, row: TableRow, value: CellValue) => {
+      const existingChange = pendingChanges.current.find(
+        change => change.column === column && change.row === row
+      );
+      if (existingChange) {
+        existingChange.value = value;
+        return;
+      }
       pendingChanges.current.push({ column, row, value });
       debouncedSetChanges();
     },
     [pendingChanges, debouncedSetChanges]
   );
 
-  const handleDeleteRow = useCallback(
-    (rowId: string) => setData(prev => deleteRow(prev, rowId)),
-    [setData]
-  );
-
-  if (!currentItems.length || !visibleColumns.length) {
-    return <p className="text-center m-20 text-gray-500">No data to display.</p>;
+  if (!currentItems?.length || !visibleColumns?.length) {
+    return (
+      <p className="text-center m-20 text-gray-500">No data to display.</p>
+    );
   }
-  
+
   return (
     <div className="overflow-auto h-[65vh] w-fit max-w-full m-auto border">
       <table>
-        <MemoTableHead
-          visibleColumns={visibleColumns}
-          handleUpdateCell={handleUpdateCell}
-          handleHideColumn={handleHideColumn}
-        />
-        <MemoTableBody
-          currentItems={currentItems}
-          visibleColumns={visibleColumns}
-          handleUpdateCell={handleUpdateCell}
-          handleDeleteRow={handleDeleteRow}
-        />
+        <MemoTableHead handleUpdateCell={handleUpdateCell} />
+        <MemoTableBody handleUpdateCell={handleUpdateCell} />
       </table>
     </div>
   );

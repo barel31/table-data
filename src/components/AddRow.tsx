@@ -1,13 +1,11 @@
-import { type Dispatch, type SetStateAction, memo } from 'react';
+import { memo } from 'react';
+import useTableContext from '@/hooks/useTableContext';
 import { inputPattern } from '@/helpers/table';
 import { addNewRow } from '@/services/table';
 
-type Props = {
-  columns: TableColumn[];
-  setData: Dispatch<SetStateAction<TableData>>;
-};
+export default function AddRow() {
+  const { columns, setData } = useTableContext();
 
-export default function AddRow({ columns, setData }: Props) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setData(prev => addNewRow(prev, e));

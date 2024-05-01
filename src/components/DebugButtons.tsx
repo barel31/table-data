@@ -1,21 +1,11 @@
+import { memo } from 'react';
+import useTableContext from '@/hooks/useTableContext';
 import { clearRows } from '@/services/table';
-import { type Dispatch, type SetStateAction, memo } from 'react';
 
-type Props = {
-  data: TableData;
-  hiddenColumns: string[];
-  visibleColumns: TableColumn[];
-  changes: TableData;
-  setData: Dispatch<SetStateAction<TableData>>;
-};
+export default function DebugButtons() {
+  const { data, hiddenColumns, visibleColumns, changes, setData } =
+    useTableContext();
 
-export default function DebugButtons({
-  data,
-  hiddenColumns,
-  visibleColumns,
-  changes,
-  setData,
-}: Props) {
   const handleClickClear = () => {
     setData(prev => clearRows(prev));
   };

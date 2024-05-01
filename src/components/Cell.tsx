@@ -13,11 +13,12 @@ type Props = {
 
 export default function Cell({ column, row, handleUpdateCell }: Props) {
   const { id, type, title, width } = column;
+
   return (
     <input
       id={`${row?.id ?? 0}-${id}`}
       type={row ? type : 'text'}
-      defaultValue={String(row ? row[id] ?? '' : title)}
+      defaultValue={row ? String(row[id] ?? '') : title}
       className={`border-none text-slate-700 p-1 bg-transparent text-center ${
         row
           ? 'invalid:ring-2 invalid:ring-red-500 invalid:ring-opacity-50 invalid:bg-red-50'

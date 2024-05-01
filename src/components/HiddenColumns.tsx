@@ -1,17 +1,10 @@
-import { IconEyeOpen } from '@/assets/icons';
 import { memo, useMemo } from 'react';
+import useTableContext from '@/hooks/useTableContext';
+import { IconEyeOpen } from '@/assets/icons';
 
-type Props = {
-  columns: TableColumn[];
-  hiddenColumns: String[];
-  handleHideColumn: (columnId: string) => void;
-};
+export default function HiddenColumns() {
+  const { columns, hiddenColumns, handleHideColumn } = useTableContext();
 
-export default function HiddenColumns({
-  columns,
-  hiddenColumns,
-  handleHideColumn,
-}: Props) {
   const columnTitles = useMemo(
     () =>
       columns
@@ -41,6 +34,6 @@ export default function HiddenColumns({
       </div>
     </div>
   );
-};
+}
 
 export const MemoHiddenColumns = memo(HiddenColumns);

@@ -1,13 +1,10 @@
-import { IconHideEyeClose } from '@/assets/icons';
 import { memo } from 'react';
+import useTableContext from '@/hooks/useTableContext';
+import { IconHideEyeClose } from '@/assets/icons';
 
-export default function HideColumnBtn({
-  column,
-  handleHideColumn,
-}: {
-  column: TableColumn;
-  handleHideColumn: (columnId: string) => void;
-}) {
+export default function HideColumnBtn({ column }: { column: TableColumn }) {
+  const { handleHideColumn } = useTableContext();
+
   return (
     <button
       className="block my-1 mx-auto"

@@ -1,24 +1,25 @@
-import { memo } from 'react';
-import { IconTrash } from '@/assets/icons';
+import { memo, useCallback } from 'react';
+import useTableContext from '@/hooks/useTableContext';
+import { deleteRow } from '@/services/table';
 import Cell from './Cell';
+import { IconTrash } from '@/assets/icons';
 
 type Props = {
-  currentItems: TableRow[];
-  visibleColumns: TableColumn[];
   handleUpdateCell: (
     column: TableColumn,
     row: TableRow,
     value: CellValue
   ) => void;
-  handleDeleteRow: (rowId: string) => void;
 };
 
-export default function TableBody({
-  currentItems,
-  visibleColumns,
-  handleUpdateCell,
-  handleDeleteRow,
-}: Props) {
+export default function TableBody({ handleUpdateCell }: Props) {
+  const { visibleColumns, currentItems, setData } = useTableContext();
+
+  const handleDeleteRow = useCallback(
+    (rowId: string) => setData(prev => deleteRow(prev, rowId)),
+    [setData]
+  );
+
   return (
     <tbody>
       {currentItems?.map(row => (
@@ -32,7 +33,7 @@ export default function TableBody({
               />
             </td>
           ))}
-          {visibleColumns.length ? (
+          {visibleColumns.length && (
             <td>
               <button
                 onClick={() => handleDeleteRow(row.id)}
@@ -41,7 +42,7 @@ export default function TableBody({
                 <IconTrash className="w-6 h-6 p-0.5" />
               </button>
             </td>
-          ) : null}
+          )}
         </tr>
       ))}
     </tbody>

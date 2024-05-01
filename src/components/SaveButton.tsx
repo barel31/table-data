@@ -1,15 +1,12 @@
-import { updateChanges } from '@/services/table';
 import { memo } from 'react';
+import useTableContext from '@/hooks/useTableContext';
+import { updateChanges } from '@/services/table';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-type Props = {
-  setData: React.Dispatch<React.SetStateAction<TableData>>;
-  changes: TableData | any;
-  setChanges: React.Dispatch<React.SetStateAction<TableData>>;
-};
+export default function SaveButton() {
+  const { changes, setChanges, setData } = useTableContext();
 
-export default function SaveButton({ changes, setData, setChanges }: Props) {
   const handleClick = () => {
     setData(prev => updateChanges(prev, changes));
     toast('Data saved! 🎉');

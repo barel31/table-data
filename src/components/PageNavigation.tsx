@@ -1,18 +1,8 @@
-import { type Dispatch, type SetStateAction, memo } from 'react';
-import { itemsPerPage } from '@/assets/constants';
+import { memo } from 'react';
+import useTableContext from '@/hooks/useTableContext';
 
-type Props = {
-  currentPage: number;
-  rows: TableRow[];
-  setCurrentPage: Dispatch<SetStateAction<number>>;
-};
-
-export default function PageNavigation({
-  currentPage,
-  rows,
-  setCurrentPage,
-}: Props) {
-  const lastPage = Math.ceil(rows?.length / itemsPerPage);
+export default function PageNavigation() {
+  const { currentPage, setCurrentPage, lastPage } = useTableContext();
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {

@@ -1,23 +1,20 @@
 import { memo } from 'react';
-import { IconTrash } from '@/assets/icons';
-import Cell from './Cell';
+import useTableContext from '@/hooks/useTableContext';
 import { MemoHideColumnBtn } from './HideColumnBtn';
+import Cell from './Cell';
+import { IconTrash } from '@/assets/icons';
 
 type Props = {
-  visibleColumns: TableColumn[];
   handleUpdateCell: (
     column: TableColumn,
     row: TableRow,
     value: CellValue
   ) => void;
-  handleHideColumn: (columnId: string) => void;
 };
 
-export default function TableHead({
-  visibleColumns,
-  handleUpdateCell,
-  handleHideColumn,
-}: Props) {
+export default function TableHead({ handleUpdateCell }: Props) {
+  const { visibleColumns } = useTableContext();
+  
   return (
     <thead>
       <tr>
@@ -30,19 +27,16 @@ export default function TableHead({
             <p className="text-xs text-slate-500 italic truncate relative bottom-1">
               {column.type}
             </p>
-            <MemoHideColumnBtn
-              column={column}
-              handleHideColumn={handleHideColumn}
-            />
+            <MemoHideColumnBtn column={column} />
           </th>
         ))}
-        {visibleColumns.length ? (
+        {visibleColumns.length && (
           <th className="sticky top-0 bg-white z-10 shadow-sm">
             <button disabled={true} className="p-2" title="Delete Row">
               <IconTrash className="w-6 h-6" />
             </button>
           </th>
-        ) : null}
+        )}
       </tr>
     </thead>
   );
